@@ -4,12 +4,11 @@
 //
 // Execute `rustlings hint clippy3` or use the `hint` watch subcommand for a hint.
 
-
 #[allow(unused_variables, unused_assignments)]
 fn main() {
-    let my_option: Option<()> = None;
+    let my_option: Option<()> = Some(());
     if my_option.is_none() {
-        panic!("this value is None");
+        println!("this is None");
     }
 
     let my_arr = &[
