@@ -2,11 +2,12 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::cmp::PartialOrd;
+use std::clone::Clone;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -70,13 +71,37 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+    where T: PartialOrd + Clone
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        if list_a.length == 0 {
+            return list_b;
+        } 
+        if list_b.length == 0 {
+            return list_a;
         }
+        let mut list_c = Self::new();
+        
+        let mut node_ptr_a = list_a.start;
+        let mut node_ptr_b = list_b.start;
+        
+        while let Some((ptr_a,ptr_b)) = node_ptr_a.zip(node_ptr_b) {
+            let val_a = unsafe{(*ptr_a.as_ptr()).val.clone()};
+            let val_b = unsafe{(*ptr_b.as_ptr()).val.clone()};
+            if val_a <= val_b {
+                list_c.add(val_a);
+                node_ptr_a = unsafe{(*ptr_a.as_ptr()).next};
+            } else {
+                list_c.add(val_b);
+                node_ptr_b = unsafe{(*ptr_b.as_ptr()).next};
+            }
+        }
+        if node_ptr_a.is_none() {
+            unsafe{(*(list_c.end.unwrap().as_ptr())).next = node_ptr_b;}
+        } else {
+            unsafe{(*(list_c.end.unwrap().as_ptr())).next = node_ptr_a;}
+        }
+        list_c 
 	}
 }
 
