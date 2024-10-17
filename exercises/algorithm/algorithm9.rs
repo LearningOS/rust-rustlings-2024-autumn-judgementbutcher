@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -18,7 +17,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -36,8 +35,16 @@ where
         self.len() == 0
     }
 
-    pub fn add(&mut self, value: T) {
+    pub fn add(&mut self, value: T) where T: std::clone::Clone {
         //TODO
+        self.count += 1;
+        self.items.push(value.clone());
+        let mut idx = self.count;
+        while idx > 1 && (self.comparator)(&value, &self.items[self.parent_idx(idx)]) {
+            let pidx = self.parent_idx(idx);
+            self.items.swap(idx, pidx);
+            idx = pidx;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +65,14 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-        
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right < self.len() && (self.comparator)(&self.items[right], &self.items[left]) {
+            right
+        } else {
+            left
+        }
     }
 }
 
@@ -79,16 +93,29 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + std::clone::Clone
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
         //TODO
-        if count == 0 {
-		    return None;
+        if self.is_empty() {
+            return None
         }
+        let root = self.items[1].clone();
+        let val = self.items[self.count].clone();
+        self.items.swap(1,self.count);
+        self.count -= 1;
+        let mut idx = 1;
 
+        //adjust heap
+        while self.children_present(idx) && !(self.comparator)(&val, &self.items[self.smallest_child_idx(idx)]) {
+            let child_idx = self.smallest_child_idx(idx);
+            self.items.swap(idx,child_idx);
+            idx = child_idx;
+        }
+        self.items.truncate(self.count + 1);
+        Some(root)
     }
 }
 
