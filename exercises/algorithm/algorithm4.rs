@@ -55,7 +55,6 @@ where
         } else {
             self.root = Some(Box::new(TreeNode::new(value)));
         }
-
     }
 
     // Search for a value in the BST
