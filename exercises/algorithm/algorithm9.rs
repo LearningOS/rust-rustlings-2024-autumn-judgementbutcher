@@ -58,7 +58,7 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        
     }
 }
 
@@ -85,7 +85,10 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if count == 0 {
+		    return None;
+        }
+
     }
 }
 

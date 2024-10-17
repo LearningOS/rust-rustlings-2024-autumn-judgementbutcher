@@ -2,7 +2,6 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -71,9 +70,12 @@ impl<T> MyStack<T> {
     pub fn push(&mut self, elem: T) {
         //TODO
         self.q2.enqueue(elem);
-
-        while !self.q1.is_empty() {
-            self.q2.enqueue(self.q1.dequeue().unwrap()); 
+        self.size += 1;
+        while let Ok(val) = self.q1.dequeue() {
+            self.q2.enqueue(val);
+        }
+        while let Ok(val) = self.q2.dequeue() {
+            self.q1.enqueue(val);
         }
         
     }
